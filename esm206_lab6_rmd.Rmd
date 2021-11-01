@@ -25,3 +25,47 @@ set.seed(1424)
 gp_2 <- sample.int(30, size = 15, replace = TRUE) # replace makes it possible to pull the same number multiple times
 ```
 
+```{r}
+hist(gp_1) #quick histogram
+
+hist(gp_2) #Looking at this we're not convinced that the means will be normally distributed.
+```
+
+Try a t-test:
+```{r}
+t.test(gp_1, gp_2)
+```
+What is the meaning of the p value above? 
+
+My description: If the two means came from the sample population, then there's a 2% chance that a sampling of the two means will be greater...
+
+Real description: If these samples were drawn from populations with the same mean, the probability of taking two random samples with means *at least as different* as the sample means we found by random chance (taking into account spread and sample size) is 19.8%.
+
+Is it so unlikely to get this by random chance that we would think this would be an unlikely p value? No, it seems very likely.
+
+We thus have sufficient evidence to retain (fail to reject) the null hypothesis. >> There is no significant difference in means between group 1 and group 2.
+
+Do not say "accept" the null ever.
+
+Now let's compare this outcome to a rank-based test.
+
+## Mann Whitney U unpaired rank-based test
+
+```{r}
+mwu <- wilcox.test(gp_1, gp_2) #default is unpaired but can be paired. If there are matching samples then there are ties in the ranks and then it makes an approximation. You can disregard that warning message.
+
+mwu
+```
+What does this p value mean?
+
+My description: If these samples were drawn from populations with the same rank, the probability of taking two random samples with means *at least as different* as the sample means we found by random chance (taking into account spread and sample size) is 28%.
+
+Real description: If these samples were drawn from populations with the same ranks (medians), the probability of finding two samples with ranks *at least as different* as those in our samples is 0.28. 
+
+Is that so unlikely to have happened that it should be evidence to reject the null hypothesis?
+
+There is no significant difference in ranks (often you'll see medians) between group 1 and group 2 (statistical summary).
+
+Median scores for group 1 (M = 14) and group 2 (M = 12) did not differ significantly.(Mann Whitney U test: U(df) = 86, p = 0.28). *Where did the Median scores here come from?*
+
+Make sure to use the right words when explaining (use mean if t-test and use median if MWU test). You want to send a consistent message about how you decided to ultimately compare your data.
