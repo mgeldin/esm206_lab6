@@ -33,7 +33,7 @@ hist(gp_2) #Looking at this we're not convinced that the means will be normally 
 
 Try a t-test:
 ```{r}
-t.test(gp_1, gp_2)
+myt_ttest <- t.test(gp_1, gp_2)
 ```
 What is the meaning of the p value above? 
 
@@ -69,3 +69,47 @@ There is no significant difference in ranks (often you'll see medians) between g
 Median scores for group 1 (M = 14) and group 2 (M = 12) did not differ significantly.(Mann Whitney U test: U(df) = 86, p = 0.28). *Where did the Median scores here come from?*
 
 Make sure to use the right words when explaining (use mean if t-test and use median if MWU test). You want to send a consistent message about how you decided to ultimately compare your data.
+
+Use mwu$p.value (or other value) to get the information for that value. Look up ?wilcox.test and scroll down to value to find out what you want. Can also use ?kruskal.test for Kruskal - Wallis test.
+
+## Linear Regression
+
+Simple linear regreation (single dependent variable, and a single independant variable) # Correlation does not mean causation. 
+
+```{r}
+# Make an exploratory plot of penguin body mass versus flipper length (x-axis)
+# Include equals false in this code chunk means it won't be in your rmarkdown. *Could not get this to work in this chunk though?*
+ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point() +
+  geom_smooth(method = "lm") # Don't add any smoothing to a final document if you don't know how to explain it. You can use it to just explore the relationship. 
+```
+Find a linear regression model using ordinary least squares describin the relationship between flipper length and body mass for these penguins.
+
+3 pieces:
+
+- What type of model? 
+- What is the relationship to model (DV ~ IV(s)) # Dependent variable as a function of independent variable or variables
+- WHere is the data that's used to create this model?
+
+```{r}
+penguin_lm <- lm(body_mass_g ~ flipper_length_mm, data = penguins) # ~ means as a function of
+```
+
+### broom package returns model outputs as tidy data frames
+
+```{r}
+penguin_lm_tidy <- broom::tidy(penguin_lm)
+
+penguin_lm_tidy
+
+broom::glance(penguin_lm) #Model wide data frame; we'll talk about these more Wednesday and next week.
+```
+How can I actually include my model equation in a report?
+
+```{r}
+extract_eq(model = penguin_lm, use_coefs = TRUE) #Storing outcomes of the model in a nice equation - look in knit!
+```
+```{r}
+plot(penguin_lm) #Four plots: Plot one - for each point, how far does it exist from what the model would predict. Are they somewhat evenly spread around the predicted line? Plot three - scaled version of plot one. Does it look like the residuals have equal spread across the model? Plot two - most relevant. its a qq plot. it explores normality. an assumption is normality of the residuals. are residuals normally distributing? this example looks like definitely yes. It's a diagnostic plot. Plot four - considers outliers. what points seem to be impacting the model outputs? Are there any points that seem to be having a disproportional weight on the model output?
+```
+
